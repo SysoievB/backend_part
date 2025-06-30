@@ -1,9 +1,11 @@
 package com.backend_part;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 /**
  * <h3>CrossOrigin</h3>
@@ -18,15 +20,26 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
-public class Controller {
+@RequiredArgsConstructor
+class NamesController {
+    private final NamesService service;
 
     @PostMapping("/process-name")
-    public Mono<ResponseDTO> processName(@RequestBody RequestDTO request) {
-        log.info("Received name: {}", request.name());
-        val processedName = "Hello, " + request.name() + "! Welcome to Spring WebFlux!";
-        log.info("Processed name: {}", processedName);
+    Mono<ResponseDTO> processName(@RequestBody RequestDTO request) {
+        log.info("----------------------Received name: {}----------------------", request.name());
+        return service.getName(request.name())
+                .log()
+                .map(ResponseDTO::new)
+                .doOnSuccess(responseDTO -> log.info("Response received: {}", responseDTO));
+    }
 
-        return Mono.just(new ResponseDTO(processedName));
+    @GetMapping
+    Mono<List<String>> getAllNames() {
+        log.info("----------------------Received all names----------------------");
+        return service.getNames()
+                .log()
+                .doOnSuccess(names -> log.info("Returning {} names", names.size()));
+
     }
 
     // Request DTO - what we receive from frontend
