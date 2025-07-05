@@ -27,10 +27,10 @@ class NamesController {
     @PostMapping("/process-name")
     Mono<ResponseDTO> processName(@RequestBody RequestDTO request) {
         log.info("----------------------Received name: {}----------------------", request.name());
-        return service.getName(request.name())
+        return service.addName(request.name())
                 .log()
                 .map(ResponseDTO::new)
-                .doOnSuccess(responseDTO -> log.info("Response received: {}", responseDTO));
+                .doOnSuccess(responseDTO -> log.info("Response received on POST: {}", responseDTO));
     }
 
     @GetMapping
@@ -38,8 +38,17 @@ class NamesController {
         log.info("----------------------Received all names----------------------");
         return service.getNames()
                 .log()
-                .doOnSuccess(names -> log.info("Returning {} names", names.size()));
+                .doOnSuccess(names -> log.info("Returning {} names on GET ALL", names.size()));
 
+    }
+
+    @PutMapping
+    Mono<ResponseDTO> updateName(@RequestParam String name, @PathVariable int index) {
+        log.info("----------------------Received name: {}-----------------------", name);
+        return service.updateName(name, index)
+                .log()
+                .map(ResponseDTO::new)
+                .doOnSuccess(responseDTO -> log.info("Response received on PUT: {}", responseDTO));
     }
 
     // Request DTO - what we receive from frontend
