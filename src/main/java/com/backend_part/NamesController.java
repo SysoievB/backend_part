@@ -18,13 +18,13 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/names")
 @CrossOrigin(origins = "http://localhost:3000")
 @RequiredArgsConstructor
 class NamesController {
     private final NamesService service;
 
-    @PostMapping("/process-name")
+    @PostMapping
     Mono<ResponseDTO> processName(@RequestBody RequestDTO request) {
         log.info("----------------------Received name: {}----------------------", request.name());
         return service.addName(request.name())
@@ -42,7 +42,7 @@ class NamesController {
 
     }
 
-    @PutMapping
+    @PutMapping("/{index}")
     Mono<ResponseDTO> updateName(@RequestParam String name, @PathVariable int index) {
         log.info("----------------------Received name: {}-----------------------", name);
         return service.updateName(name, index)
