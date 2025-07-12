@@ -33,7 +33,7 @@ class NamesController {
                 .doOnSuccess(responseDTO -> log.info("Response received on POST: {}", responseDTO));
     }
 
-    @GetMapping
+    @GetMapping("/all")
     Mono<List<String>> getAllNames() {
         log.info("----------------------Received all names----------------------");
         return service.getNames()
@@ -49,6 +49,12 @@ class NamesController {
                 .log()
                 .map(ResponseDTO::new)
                 .doOnSuccess(responseDTO -> log.info("Response received on PUT: {}", responseDTO));
+    }
+
+    @DeleteMapping("/{index}")
+    Mono<Void> deleteName(@PathVariable int index) {
+        log.info("----------------------Name going to be deleted-----------------------");
+        return service.deleteName(index);
     }
 
     // Request DTO - what we receive from frontend

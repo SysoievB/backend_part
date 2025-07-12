@@ -29,4 +29,16 @@ class NamesService {
                         .orElseThrow(() -> new RuntimeException("Name not found"))
                 );
     }
+
+    Mono<Void> deleteName(int index) {
+        return getNames()
+                .handle((list, sink) -> {
+                    try {
+                        list.remove(index);
+                        sink.complete(); //the same as Mono.empty()
+                    } catch (Exception e) {
+                        sink.error(new RuntimeException(e.getMessage(), e));
+                    }
+                });
+    }
 }
