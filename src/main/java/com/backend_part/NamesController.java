@@ -44,7 +44,7 @@ class NamesController {
 
     @PutMapping("/{index}")
     Mono<ResponseDTO> updateName(@RequestParam String name, @PathVariable int index) {
-        log.info("----------------------Received name: {}-----------------------", name);
+        log.info("----------------------Received name for Update: {}-----------------------", name);
         return service.updateName(name, index)
                 .log()
                 .map(ResponseDTO::new)
