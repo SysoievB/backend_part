@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * <h3>CrossOrigin</h3>
@@ -57,11 +58,18 @@ class NamesController {
         return service.deleteName(index);
     }
 
-    // Request DTO - what we receive from frontend
-    private record RequestDTO(String name) {
+    @GetMapping("/status")
+    public String updateStatus(@RequestParam boolean active) {
+        log.info("----------------------Switch was set to {}-----------------------", String.valueOf(active).toUpperCase());
+        return Optional.of(active)
+                .filter(Boolean::booleanValue)
+                .map(ignored -> "Status is now ACTIVE ✅")
+                .orElse("Status is now INACTIVE ❌");
     }
 
-    // Response DTO - what we send back to frontend
+    // both needed in order to avoid misconception on UI where what field is
+    private record RequestDTO(String name) {
+    }
     private record ResponseDTO(String processedName) {
     }
 }
